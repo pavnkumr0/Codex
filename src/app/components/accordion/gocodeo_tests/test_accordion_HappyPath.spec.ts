@@ -24,7 +24,7 @@ describe('Accordion Component - Happy Path', () => {
   });
 
   it('Scenario 1: Single Tab Selection', () => {
-    const tab1 = new AccordionTab();
+    const tab1 = new AccordionTab(null,null,null);
     tab1.selected = false;
 
     tab1.toggle();
@@ -36,7 +36,7 @@ describe('Accordion Component - Happy Path', () => {
   it('Scenario 2: Multiple Tab Selection', () => {
     accordion.multiple = true;
 
-    const tab1 = new AccordionTab();
+    const tab1 = new AccordionTab(null,null,null);
     tab1.selected = false;
 
     const tab2 = new AccordionTab();
