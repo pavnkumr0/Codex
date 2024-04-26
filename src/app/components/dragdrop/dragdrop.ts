@@ -13,6 +13,15 @@ import { VoidListener } from 'primeng/ts-helpers';
     }
 })
 export class Draggable implements AfterViewInit, OnDestroy {
+    dragEnter(mockDragEvent: DragEvent) {
+      throw new Error('Method not implemented.');
+    }
+    dragLeave(mockDragEvent: DragEvent) {
+      throw new Error('Method not implemented.');
+    }
+    drop(mockDragEvent: DragEvent) {
+      throw new Error('Method not implemented.');
+    }
     @Input('pDraggable') scope: string | undefined;
     /**
      * Defines the cursor style.
@@ -52,6 +61,8 @@ export class Draggable implements AfterViewInit, OnDestroy {
     mouseUpListener: VoidListener;
 
     _pDraggableDisabled: boolean = false;
+  dropEffect: string;
+  onDrop: any;
 
     constructor(public el: ElementRef, public zone: NgZone, private renderer: Renderer2) {}
 
