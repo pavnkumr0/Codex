@@ -11,6 +11,8 @@ import { DomHandler } from 'primeng/dom';
         '[class.p-animate]': 'true'
     }
 })
+
+
 export class Animate implements OnInit, AfterViewInit {
     /**
      * Selector to define the CSS class for enter animation.
@@ -27,7 +29,7 @@ export class Animate implements OnInit, AfterViewInit {
 
     timeout: any;
 
-    constructor(private host: ElementRef, public el: ElementRef, public renderer: Renderer2) {}
+    constructor(public host: ElementRef, public el: ElementRef, public renderer: Renderer2) {}
 
     ngOnInit() {
         console.log('pAnimate directive is deprecated in 16.7.0 and will be removed in the future. Use pAnimateOnScroll directive instead');

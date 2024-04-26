@@ -90,6 +90,11 @@
         "zone.js": "~0.14.0"
     },
     "dependencies": {
+<<<<<<< HEAD
+=======
+        "@angular/material": "^17.3.6",
+        "npm": "^10.5.2",
+>>>>>>> refs/remotes/origin/master
         "primeng": "^17.14.1"
     }
 }
