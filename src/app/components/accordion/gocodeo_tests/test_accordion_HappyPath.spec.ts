@@ -1,120 +1,214 @@
-import {  Accordion, AccordionTab  } from '../accordion.ts';
-import {  Component, TemplateRef  } from '@angular/core';
-import {  TestBed, async, ComponentFixture  } from '@angular/core/testing';
-import {  BrowserAnimationsModule  } from '@angular/platform-browser/animations';
+import {  TestBed, ComponentFixture  } from '@angular/core/testing';
+import {  AccordionModule, Accordion, AccordionTab  } from '../accordion';
+import {  Component, DebugElement  } from '@angular/core';
+import {  By  } from '@angular/platform-browser';
+import {  NoopAnimationsModule  } from '@angular/platform-browser/animations';
 
-@Component({selector: 'test-component', template: ''})
-class TestComponent {}
+@Component({
+  template: `
+    <p-accordion [multiple]="false">
+        <p-accordionTab header="Tab 1">
+          Content 1
+        </p-accordionTab>
+        <p-accordionTab header="Tab 2">
+          Content 2
+        </p-accordionTab>
+        <p-accordionTab header="Tab 3" [disabled]="true">
+          Content 3
+        </p-accordionTab>
+    </p-accordion>
+  `
+})
+class TestAccordionComponent {}
 
-describe('Accordion Component - Happy Path', () => {
-  let fixture: ComponentFixture<TestComponent>;
-  let accordion: Accordion;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [TestComponent, Accordion, AccordionTab],
-      imports: [BrowserAnimationsModule]
-    }).compileComponents();
-  }));
+describe('AccordionComponent', () => {
+  let fixture: ComponentFixture<TestAccordionComponent>;
+  let component: TestAccordionComponent;
+  let accordionDebugElement: DebugElement;
+  let accordionInstance: Accordion;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TestComponent);
-    accordion = fixture.debugElement.children[0].componentInstance as Accordion;
+    TestBed.configureTestingModule({
+      imports: [AccordionModule, NoopAnimationsModule],
+      declarations: [TestAccordionComponent]
+    });
+
+    fixture = TestBed.createComponent(TestAccordionComponent);
+    component = fixture.componentInstance;
+    accordionDebugElement = fixture.debugElement.query(By.directive(Accordion));
+    accordionInstance = accordionDebugElement.componentInstance;
     fixture.detectChanges();
   });
 
-  it('Scenario 1: Single Tab Selection', () => {
-    const tab1 = new AccordionTab(null,null,null);
-    tab1.selected = false;
+  it('should expand only the selected tab and collapse others', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.toggle();
+    fixture.detectChanges();
 
-    tab1.toggle();
-
-    expect(tab1.selected).toBe(true);
-    expect(accordion.activeIndex).toBe(0);
+    expect(accordionInstance.tabs[0].selected).toBeTruthy();
+    expect(accordionInstance.tabs[1].selected).toBeFalsy();
   });
 
-  it('Scenario 2: Multiple Tab Selection', () => {
-    accordion.multiple = true;
+  it('should not expand or collapse a disabled tab', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[2].componentInstance.toggle();
+    fixture.detectChanges();
 
-    const tab1 = new AccordionTab(null,null,null);
-    tab1.selected = false;
-
-    const tab2 = new AccordionTab();
-    tab2.selected = false;
-
-    tab1.toggle();
-    tab2.toggle();
-
-    expect(tab1.selected).toBe(true);
-    expect(tab2.selected).toBe(true);
-    expect(accordion.activeIndex).toEqual([0, 1]);
+    expect(accordionInstance.tabs[2].selected).toBeFalsy();
   });
 
-  it('Scenario 3: Keyboard Navigation', () => {
-    const tab1 = new AccordionTab();
-    tab1.selected = true;
+  it('should load lazy content when a tab is selected', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.toggle();
+    fixture.detectChanges();
 
-    const tab2 = new AccordionTab();
-    tab2.selected = false;
-
-    tab1.onKeydown({ code: 'ArrowDown' });
-    expect(tab1.selected).toBe(false);
-    expect(tab2.selected).toBe(true);
-    expect(accordion.activeIndex).toBe(1);
+    expect(accordionInstance.tabs[0].loaded).toBeTruthy();
   });
 
-  it('Scenario 4: Lazy Loading Content', () => {
-    const tab = new AccordionTab();
-    tab.loaded = false;
-    tab.selected = false;
+  it('should display tabs with custom header styles', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.headerStyle = { 'background-color': 'red' };
+    fixture.detectChanges();
 
-    tab.toggle();
-
-    expect(tab.selected).toBe(true);
-    expect(tab.loaded).toBe(true);
+    const header = tabElements[0].query(By.css('.p-accordion-header-link')).nativeElement;
+    expect(header.style.backgroundColor).toBe('red');
   });
 
-  it('Scenario 5: Custom Icon Templates', () => {
-    const tab = new AccordionTab();
-    tab.selected = false;
-    
-    const template: TemplateRef<any> = null; // Insert your custom icon template here
-    tab.iconTemplate = template;
-    
-    tab.toggle();
+  it('should display custom icons in tab headers', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    const iconTemplate = '<ng-template><i class="fa fa-star"></i></ng-template>';
+    tabElements[0].componentInstance.iconTemplate = { template: iconTemplate };
+    fixture.detectChanges();
 
-    expect(tab.iconTemplate).toBe(template);
+    const iconElem = tabElements[0].query(By.css('.fa.fa-star'));
+    expect(iconElem).toBeTruthy();
   });
 
-  it('Scenario 6: Header ARIA Level', () => {
-    accordion.headerAriaLevel = 3;
+  it('should keep multiple tabs open when multiple selection is enabled', () => {
+    accordionInstance.multiple = true;
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.toggle();
+    tabElements[1].componentInstance.toggle();
+    fixture.detectChanges();
 
-    const tab1 = new AccordionTab();
-    tab1.selected = false;
-
-    tab1.toggle();
-
-    expect(accordion.headerAriaLevel).toBe(3);
-    expect(tab1.headerAriaLevel).toBe(3);
+    expect(accordionInstance.tabs[0].selected).toBeTruthy();
+    expect(accordionInstance.tabs[1].selected).toBeTruthy();
   });
 
-  it('Scenario 7: Focus on Tab', () => {
-    accordion.selectOnFocus = true;
+  it('should emit onClose event when a tab is collapsed', () => {
+    spyOn(accordionInstance.onClose, 'emit');
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.toggle();
+    tabElements[0].componentInstance.toggle();
+    fixture.detectChanges();
 
-    const tab1 = new AccordionTab();
-    tab1.selected = false;
+    expect(accordionInstance.onClose.emit).toHaveBeenCalledTimes(1);
+  });
 
-    const tab2 = new AccordionTab();
-    tab2.selected = false;
+  it('should emit onOpen event when a tab is expanded', () => {
+    spyOn(accordionInstance.onOpen, 'emit');
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.toggle();
+    fixture.detectChanges();
 
-    const tab1Header = fixture.debugElement.query(
-      el => el.nativeElement.getAttribute('data-pc-section') === 'headeraction'
-    ).nativeElement;
+    expect(accordionInstance.onOpen.emit).toHaveBeenCalledTimes(1);
+  });
 
-    DomHandler.focus(tab1Header);
+  it('should update activeIndex when a tab is selected', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[1].componentInstance.toggle();
+    fixture.detectChanges();
 
-    expect(tab1.selected).toBe(true);
-    expect(tab2.selected).toBe(false);
-    expect(accordion.activeIndex).toBe(0);
+    expect(accordionInstance.activeIndex).toBe(1);
+  });
+
+  it('should select the first tab when activeIndex is not set', () => {
+    accordionInstance.activeIndex = null;
+    fixture.detectChanges();
+
+    expect(accordionInstance.tabs[0].selected).toBeTruthy();
+  });
+
+  it('should select the tab at the specified index when activeIndex is set', () => {
+    accordionInstance.activeIndex = 1;
+    fixture.detectChanges();
+
+    expect(accordionInstance.tabs[1].selected).toBeTruthy();
+  });
+
+  it('should update activeIndex when multiple tabs are selected', () => {
+    accordionInstance.multiple = true;
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.toggle();
+    tabElements[1].componentInstance.toggle();
+    fixture.detectChanges();
+
+    expect(accordionInstance.activeIndex).toEqual([0, 1]);
+  });
+
+  it('should focus the selected tab when selectOnFocus is enabled', () => {
+    accordionInstance.selectOnFocus = true;
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[1].componentInstance.toggle();
+    fixture.detectChanges();
+
+    expect(document.activeElement).toBe(tabElements[1].nativeElement);
+  });
+
+  it('should not focus the selected tab when selectOnFocus is disabled', () => {
+    accordionInstance.selectOnFocus = false;
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[1].componentInstance.toggle();
+    fixture.detectChanges();
+
+    expect(document.activeElement).not.toBe(tabElements[1].nativeElement);
+  });
+
+  it('should navigate to the next tab when the arrow down key is pressed', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.toggle();
+    fixture.detectChanges();
+
+    const headerElement = tabElements[0].query(By.css('.p-accordion-header-link')).nativeElement;
+    headerElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    fixture.detectChanges();
+
+    expect(accordionInstance.tabs[1].selected).toBeTruthy();
+  });
+
+  it('should navigate to the previous tab when the arrow up key is pressed', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[1].componentInstance.toggle();
+    fixture.detectChanges();
+
+    const headerElement = tabElements[1].query(By.css('.p-accordion-header-link')).nativeElement;
+    headerElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+    fixture.detectChanges();
+
+    expect(accordionInstance.tabs[0].selected).toBeTruthy();
+  });
+
+  it('should navigate to the first tab when the home key is pressed', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[2].componentInstance.toggle();
+    fixture.detectChanges();
+
+    const headerElement = tabElements[2].query(By.css('.p-accordion-header-link')).nativeElement;
+    headerElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home' }));
+    fixture.detectChanges();
+
+    expect(accordionInstance.tabs[0].selected).toBeTruthy();
+  });
+
+  it('should navigate to the last tab when the end key is pressed', () => {
+    const tabElements = accordionDebugElement.queryAll(By.directive(AccordionTab));
+    tabElements[0].componentInstance.toggle();
+    fixture.detectChanges();
+
+    const headerElement = tabElements[0].query(By.css('.p-accordion-header-link')).nativeElement;
+    headerElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'End' }));
+    fixture.detectChanges();
+
+    expect(accordionInstance.tabs[2].selected).toBeTruthy();
   });
 });

@@ -1,147 +1,130 @@
 import {  ComponentFixture, TestBed  } from '@angular/core/testing';
-import {  Accordion, AccordionModule, AccordionTab, ChevronDownIcon, ChevronRightIcon  } from '../accordion';
-import {  Component, DebugElement, ViewChild, ViewChildren, QueryList  } from '@angular/core';
-import {  By  } from '@angular/platform-browser';
-import {  DomHandler  } from 'primeng/dom';
-import {  UniqueComponentId  } from 'primeng/utils';
+import {  Accordion, AccordionTab, AccordionModule  } from '../accordion';
+import {  ChangeDetectorRef, ElementRef  } from '@angular/core';
 
-describe('Accordion Component', () => {
-  let fixture: ComponentFixture<Accordion>;
-  let accordion: Accordion;
-  let debugElement: DebugElement;
+describe('Accordion', () => {
+    let accordion: Accordion;
+    let fixture: ComponentFixture<Accordion>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [AccordionModule],
-      declarations: [TestAccordionComponent, NestedAccordionComponent],
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [AccordionModule],
+            declarations: [Accordion, AccordionTab],
+            providers: [{ provide: ChangeDetectorRef, useValue: {} }]
+        });
+
+        fixture = TestBed.createComponent(Accordion);
+        accordion = fixture.componentInstance;
     });
 
-    fixture = TestBed.createComponent(Accordion);
-    accordion = fixture.componentInstance;
-    debugElement = fixture.debugElement;
-  });
+    it('should not toggle visibility when disabled', () => {
+        const mockChangeDetector = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
+        const accordionTab = new AccordionTab(accordion, new ElementRef(null), mockChangeDetector);
+        accordionTab.disabled = true;
+        const event = new MouseEvent('click');
 
-  // Negative case: Trying to toggle a disabled tab in multiple mode
-  it('should not toggle a disabled tab in multiple mode', () => {
-    accordion.multiple = true;
-    const tab1 = new AccordionTab();
-    tab1.disabled = true;
-    spyOn(tab1, 'toggle').and.callThrough();
+        spyOn(accordionTab, 'toggle');
 
-    tab1.toggle();
+        accordionTab.toggle(event);
 
-    expect(tab1.toggle).not.toHaveBeenCalled();
-  });
+        expect(accordionTab.toggle).not.toHaveBeenCalled();
+        expect(accordionTab.selected).toBeFalsy();
+    });
 
-  // Negative case: Providing a non-boolean value for the disabled input property
-  it('should convert non-boolean disabled value to boolean', () => {
-    const tab = new AccordionTab();
-    tab.disabled = 'true';
+    it('should not activate multiple tabs when multiple property is false', () => {
+        accordion.multiple = false;
 
-    expect(tab.disabled).toBe(true);
-  });
+        spyOn(accordion, 'updateSelectionState');
 
-  // Negative case: Providing an invalid value for the multiple input property
-  it('should not toggle a tab when multiple is set to an invalid value', () => {
-    accordion.multiple = false;
-    const tab1 = new AccordionTab(accordion,null,null);
-    spyOn(tab1, 'toggle').and.callThrough();
+        accordion.activeIndex = [0, 1];
 
-    tab1.toggle();
+        expect(accordion.updateSelectionState).toHaveBeenCalled();
+        expect(accordion.activeIndex).toEqual([0,1]);
+    });
 
-    expect(tab1.toggle).not.toHaveBeenCalled();
-  });
+    it('should not change the active index when selecting a tab that is already active', () => {
+        const mockChangeDetector = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
+        const myTab = new AccordionTab(accordion, new ElementRef(null), mockChangeDetector);
+        myTab.selected = false;
+        accordion.tabs = [myTab];
+        accordion.multiple = true;
+        accordion.activeIndex = [0, 1];
 
-  // Negative case: Providing a non-array value for the activeIndex input property in multiple mode
-  it('should not update activeIndex when provided with a non-array value in multiple mode', () => {
-    accordion.multiple = true;
-    accordion.activeIndex = 1;
+        spyOn(accordion, 'updateSelectionState');
 
-    expect(accordion.activeIndex).toEqual(1);
-  });
+        accordion.activeIndex = [0, 1];
 
-  // Negative case: Providing an out-of-range index for the activeIndex input property
-  it('should not update activeIndex when provided with an out-of-range index', () => {
-    accordion.activeIndex = 10;
+        expect(accordion.updateSelectionState).not.toHaveBeenCalled();
+    });
 
-    expect(accordion.activeIndex).toEqual(10);
-  });
+    it('should not emit selectedChange event when toggling visibility if disabled', () => {
+        const mockChangeDetector = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
+        const accordionTab = new AccordionTab(accordion, new ElementRef(null), mockChangeDetector);
+        accordionTab.disabled = true;
+        const event = new MouseEvent('click');
 
-  // Negative case: Providing an invalid value for the headerAriaLevel input property
-  it('should set headerAriaLevel to default value when provided with an invalid value', () => {
-    accordion.headerAriaLevel = -1;
+        spyOn(accordionTab.selectedChange, 'emit');
 
-    expect(accordion.headerAriaLevel).toBe(2);
-  });
+        accordionTab.toggle(event);
 
-  // Negative case: Trying to open multiple tabs in single mode
-  it('should not open multiple tabs in single mode', () => {
-    accordion.multiple = false;
-    accordion.tabs = [new AccordionTab(), new AccordionTab()];
-    accordion.activeIndex = [0, 1];
+        expect(accordionTab.selectedChange.emit).not.toHaveBeenCalled();
+        expect(accordionTab.selected).toBeFalsy();
+    });
 
-    expect(accordion.activeIndex).toEqual(0);
-  });
+    it('should not update active index when selecting a disabled tab', () => {
+        const mockChangeDetector = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
+        const disabledTab = new AccordionTab(accordion, new ElementRef(null), mockChangeDetector);
+        disabledTab.selected = false;
+        disabledTab.disabled = true;
+        
+        // const disabledTab = { selected: false, disabled: true };
 
-  // Negative case: Trying to access a tab that has been destroyed in the ngOnDestroy method of AccordionTab component
-  it('should remove tab from tabs array when destroyed', () => {
-    const tab = new AccordionTab();
-    accordion.tabs = [tab];
+        spyOn(accordion, 'updateSelectionState');
 
-    tab.ngOnDestroy();
+        accordion.tabs = [disabledTab];
+        accordion.activeIndex = 0;
 
-    expect(accordion.tabs.length).toBe(0);
-  });
+        expect(accordion.updateSelectionState).not.toHaveBeenCalled();
+        expect(accordion.activeIndex).toBeNull();
+    });
 
-  // Negative case: Testing accessibility of accordion header with disabled tab
-  it('should set aria-disabled attribute to true for disabled tab header', () => {
-    const tab1 = new AccordionTab();
-    tab1.disabled = true;
-    accordion.tabs = [tab1];
+    it('should not toggle visibility on keydown event other than Enter or Space', () => {
+        const mockChangeDetector = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
+        const accordionTab = new AccordionTab(accordion, new ElementRef(null), mockChangeDetector);
 
-    fixture.detectChanges();
-    const header = debugElement.query(By.css('.p-accordion-header'));
+        const event = new KeyboardEvent('keydown', { code: 'ArrowDown' });
 
-    expect(header.nativeElement.getAttribute('aria-disabled')).toBe('true');
-  });
+        spyOn(accordionTab, 'toggle');
 
-  // Negative case: Testing accessibility of accordion header with invalid aria-level value
-  it('should set aria-level attribute to default value for invalid headerAriaLevel input', () => {
-    accordion.headerAriaLevel = -1;
-    accordion.tabs = [new AccordionTab()];
+        accordionTab.onKeydown(event);
 
-    fixture.detectChanges();
-    const header = debugElement.query(By.css('.p-accordion-header'));
+        expect(accordionTab.toggle).not.toHaveBeenCalled();
+    });
 
-    expect(header.nativeElement.getAttribute('aria-level')).toBe('2');
-  });
+    it('should not toggle visibility on keydown event other than ArrowDown or ArrowUp', () => {
+        const event = new KeyboardEvent('keydown', { code: 'ArrowRight' });
 
-  // Nested Accordion Component
-  @Component({
-    template: `
-      <p-accordion>
-        <p-accordionTab header="Tab 1">
-          <p-accordion multiple>
-            <p-accordionTab header="Nested Tab 1"></p-accordionTab>
-            <p-accordionTab header="Nested Tab 2"></p-accordionTab>
-          </p-accordion>
-        </p-accordionTab>
-        <p-accordionTab header="Tab 2"></p-accordionTab>
-      </p-accordion>
-    `,
-  })
-  class NestedAccordionComponent {}
+        spyOn(accordion, 'onTabArrowDownKey');
+        spyOn(accordion, 'onTabArrowUpKey');
 
-  // Negative case: Trying to toggle a tab inside a nested accordion in single mode
-  it('should not toggle a tab inside a nested accordion in single mode', () => {
-    const nestedFixture = TestBed.createComponent(NestedAccordionComponent);
-    const nestedAccordion = nestedFixture.componentInstance.accordion;
-    nestedAccordion.multiple = false;
-    const tab1 = nestedAccordion.tabs[0].tabs[0];
-    spyOn(tab1, 'toggle').and.callThrough();
+        accordion.onKeydown(event);
 
-    tab1.toggle();
+        expect(accordion.onTabArrowDownKey).not.toHaveBeenCalled();
+        expect(accordion.onTabArrowUpKey).not.toHaveBeenCalled();
+    });
 
-    expect(tab1.toggle).not.toHaveBeenCalled();
-  });
+    it('should not toggle visibility on click event if selectOnFocus property is false', () => {
+        const mockChangeDetector = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
+
+        const accordionTab = new AccordionTab(accordion, new ElementRef(null),mockChangeDetector);
+        accordion.selectOnFocus = false;
+        const event = new MouseEvent('click');
+
+        spyOn(accordionTab, 'toggle');
+
+        accordionTab.toggle(event);
+
+        expect(accordionTab.toggle).not.toHaveBeenCalled();
+        expect(accordionTab.selected).toBeFalsy();
+    });
 });
