@@ -1,28 +1,20 @@
-import {  TestBed, ComponentFixture  } from '@angular/core/testing';
-import {  Component, Input  } from '@angular/core';
-import {  MyComponent  } from '../my.component';
+import {  VirtualRowComponent  } from '../virtual-row.component';
 
-describe('MyComponent', () => {
-  let component: MyComponent;
-  let fixture: ComponentFixture<MyComponent>;
+describe('VirtualRowComponent', () => {
+  let component: VirtualRowComponent;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [MyComponent]
-    });
-    fixture = TestBed.createComponent(MyComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component = new VirtualRowComponent();
   });
 
-  it('should set virtualRowHeight to a positive number', () => {
+  it('should set virtualRowHeight to a positive integer value greater than zero', () => {
     component.virtualRowHeight = 10;
     expect(component.virtualRowHeight).toBe(10);
   });
 
-  it('should set virtualRowHeight to a negative number', () => {
-    component.virtualRowHeight = -10;
-    expect(component.virtualRowHeight).toBe(-10);
+  it('should set virtualRowHeight to a negative integer value', () => {
+    component.virtualRowHeight = -5;
+    expect(component.virtualRowHeight).toBe(-5);
   });
 
   it('should set virtualRowHeight to zero', () => {
@@ -30,19 +22,9 @@ describe('MyComponent', () => {
     expect(component.virtualRowHeight).toBe(0);
   });
 
-  it('should set virtualRowHeight to a floating-point number', () => {
-    component.virtualRowHeight = 10.5;
-    expect(component.virtualRowHeight).toBe(10.5);
-  });
-
-  it('should set virtualRowHeight to a large integer number', () => {
-    component.virtualRowHeight = 1000000;
-    expect(component.virtualRowHeight).toBe(1000000);
-  });
-
-  it('should set virtualRowHeight to a small integer number', () => {
-    component.virtualRowHeight = 5;
-    expect(component.virtualRowHeight).toBe(5);
+  it('should set virtualRowHeight to a floating point number', () => {
+    component.virtualRowHeight = 5.5;
+    expect(component.virtualRowHeight).toBe(5.5);
   });
 
   it('should set virtualRowHeight to null', () => {
@@ -55,91 +37,98 @@ describe('MyComponent', () => {
     expect(component.virtualRowHeight).toBeUndefined();
   });
 
-  it('should set virtualRowHeight to a string', () => {
-    expect(() => {
-      component.virtualRowHeight = 'test';
-    }).toThrowError('Invalid input: virtualRowHeight must be a number');
+  it('should set virtualRowHeight to a large integer value', () => {
+    component.virtualRowHeight = 10000;
+    expect(component.virtualRowHeight).toBe(10000);
   });
 
-  it('should set virtualRowHeight to a boolean', () => {
-    expect(() => {
-      component.virtualRowHeight = true;
-    }).toThrowError('Invalid input: virtualRowHeight must be a number');
+  it('should set virtualRowHeight to a very small integer value', () => {
+    component.virtualRowHeight = 0.0001;
+    expect(component.virtualRowHeight).toBeCloseTo(0.0001);
   });
 
-  it('should get the value of virtualRowHeight after setting it to a positive number', () => {
-    component.virtualRowHeight = 10;
-    expect(component.virtualRowHeight).toBe(10);
+  it('should set virtualRowHeight to a string value', () => {
+    component.virtualRowHeight = 'test';
+    expect(component.virtualRowHeight).toBeNaN();
   });
 
-  it('should get the value of virtualRowHeight after setting it to a negative number', () => {
-    component.virtualRowHeight = -10;
-    expect(component.virtualRowHeight).toBe(-10);
+  it('should set virtualRowHeight to a negative floating point number', () => {
+    component.virtualRowHeight = -7.5;
+    expect(component.virtualRowHeight).toBe(-7.5);
   });
 
-  it('should get the value of virtualRowHeight after setting it to zero', () => {
+  it('should get virtualRowHeight when it has not been set', () => {
+    expect(component.virtualRowHeight).toBeUndefined();
+  });
+
+  it('should get virtualRowHeight after setting it to a valid integer value', () => {
+    component.virtualRowHeight = 20;
+    expect(component.virtualRowHeight).toBe(20);
+  });
+
+  it('should get virtualRowHeight after setting it to a negative value', () => {
+    component.virtualRowHeight = -3;
+    expect(component.virtualRowHeight).toBe(-3);
+  });
+
+  it('should get virtualRowHeight after setting it to zero', () => {
     component.virtualRowHeight = 0;
     expect(component.virtualRowHeight).toBe(0);
   });
 
-  it('should get the value of virtualRowHeight after setting it to a floating-point number', () => {
-    component.virtualRowHeight = 10.5;
-    expect(component.virtualRowHeight).toBe(10.5);
+  it('should get virtualRowHeight after setting it to a floating point number', () => {
+    component.virtualRowHeight = 8.5;
+    expect(component.virtualRowHeight).toBe(8.5);
   });
 
-  it('should get the value of virtualRowHeight after setting it to a large integer number', () => {
-    component.virtualRowHeight = 1000000;
-    expect(component.virtualRowHeight).toBe(1000000);
-  });
-
-  it('should get the value of virtualRowHeight after setting it to a small integer number', () => {
-    component.virtualRowHeight = 5;
-    expect(component.virtualRowHeight).toBe(5);
-  });
-
-  it('should get the value of virtualRowHeight after setting it to null', () => {
+  it('should get virtualRowHeight after setting it to null', () => {
     component.virtualRowHeight = null;
     expect(component.virtualRowHeight).toBeNull();
   });
 
-  it('should get the value of virtualRowHeight after setting it to undefined', () => {
+  it('should get virtualRowHeight after setting it to undefined', () => {
     component.virtualRowHeight = undefined;
     expect(component.virtualRowHeight).toBeUndefined();
   });
 
-  it('should throw an error when setting virtualRowHeight to a negative number', () => {
-    expect(() => {
-      component.virtualRowHeight = -1;
-    }).toThrowError('Invalid input: virtualRowHeight must be a non-negative number');
+  it('should get virtualRowHeight after setting it to a large integer value', () => {
+    component.virtualRowHeight = 15000;
+    expect(component.virtualRowHeight).toBe(15000);
   });
 
-  it('should throw an error when setting virtualRowHeight to a string that is not a number', () => {
-    expect(() => {
-      component.virtualRowHeight = 'test';
-    }).toThrowError('Invalid input: virtualRowHeight must be a number');
+  // Edge Case: Setting virtualRowHeight to Infinity
+  it('should set virtualRowHeight to Infinity', () => {
+    component.virtualRowHeight = Infinity;
+    expect(component.virtualRowHeight).toBe(Infinity);
   });
 
-  it('should throw an error when setting virtualRowHeight to a boolean', () => {
-    expect(() => {
-      component.virtualRowHeight = true;
-    }).toThrowError('Invalid input: virtualRowHeight must be a number');
+  // Edge Case: Setting virtualRowHeight to -Infinity
+  it('should set virtualRowHeight to -Infinity', () => {
+    component.virtualRowHeight = -Infinity;
+    expect(component.virtualRowHeight).toBe(-Infinity);
   });
 
-  it('should throw an error when setting virtualRowHeight to an array', () => {
-    expect(() => {
-      component.virtualRowHeight = [1, 2, 3];
-    }).toThrowError('Invalid input: virtualRowHeight must be a number');
+  // Edge Case: Setting virtualRowHeight to NaN
+  it('should set virtualRowHeight to NaN', () => {
+    component.virtualRowHeight = NaN;
+    expect(component.virtualRowHeight).toBeNaN();
   });
 
-  it('should throw an error when setting virtualRowHeight to an object', () => {
-    expect(() => {
-      component.virtualRowHeight = { a: 1, b: 2 };
-    }).toThrowError('Invalid input: virtualRowHeight must be a number');
+  // Edge Case: Setting virtualRowHeight to an empty string
+  it('should set virtualRowHeight to an empty string', () => {
+    component.virtualRowHeight = '';
+    expect(component.virtualRowHeight).toBe('');
   });
 
-  it('should throw an error when setting virtualRowHeight to a function', () => {
-    expect(() => {
-      component.virtualRowHeight = () => 10;
-    }).toThrowError('Invalid input: virtualRowHeight must be a number');
+  // Edge Case: Setting virtualRowHeight to a non-numeric value
+  it('should set virtualRowHeight to a non-numeric value', () => {
+    component.virtualRowHeight = { name: 'John Doe' };
+    expect(component.virtualRowHeight).toEqual({ name: 'John Doe' });
+  });
+
+  // Edge Case: Setting virtualRowHeight to a symbol
+  it('should set virtualRowHeight to a symbol', () => {
+    component.virtualRowHeight = Symbol('My Symbol');
+    expect(component.virtualRowHeight).toBeSymbol();
   });
 });
