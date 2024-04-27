@@ -79,6 +79,7 @@ export const TRISTATECHECKBOX_VALUE_ACCESSOR: any = {
     }
 })
 export class TriStateCheckbox implements ControlValueAccessor {
+    static ChangeDetectorRef: any;
     constructor(private cd: ChangeDetectorRef) {}
     /**
      * When present, it specifies that the element should be disabled.
