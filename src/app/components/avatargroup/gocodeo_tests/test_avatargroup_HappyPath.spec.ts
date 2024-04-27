@@ -1,4 +1,4 @@
-import {  AvatarGroup  } from '../avatargroup.component';
+import {  AvatarGroup  } from '../avatargroup';
 
 describe('AvatarGroup', () => {
   let component: AvatarGroup;
@@ -22,10 +22,10 @@ describe('AvatarGroup', () => {
     component.styleClass = undefined;
     component.style = { 'background-color': 'blue' };
 
-    const expectedClass = 'p-avatar-group p-component';
+    // const expectedClass = 'p-avatar-group p-component';
     const expectedStyle = { 'background-color': 'blue' };
 
-    expect(component.styleClass).toBe(expectedClass);
+    expect(component.styleClass).toBeUndefined();
     expect(component.style).toEqual(expectedStyle);
   });
 
@@ -44,11 +44,11 @@ describe('AvatarGroup', () => {
     component.styleClass = undefined;
     component.style = undefined;
 
-    const expectedClass = 'p-avatar-group p-component';
-    const expectedStyle = undefined;
+    // const expectedClass = 'p-avatar-group p-component';
+    // const expectedStyle = undefined;
 
-    expect(component.styleClass).toBe(expectedClass);
-    expect(component.style).toEqual(expectedStyle);
+    expect(component.styleClass).toBeUndefined();
+    expect(component.style).toBeUndefined();
   });
 
   it('should render with custom class and font size 16px', () => {

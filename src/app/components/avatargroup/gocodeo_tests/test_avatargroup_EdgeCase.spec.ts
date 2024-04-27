@@ -1,6 +1,7 @@
 import {  ComponentFixture, TestBed  } from '@angular/core/testing';
-import {  AvatarGroup  } from '../avatargroup';
+import {  AvatarGroup, AvatarGroupModule  } from '../avatargroup';
 import {  CommonModule  } from '@angular/common';
+import { By } from '@angular/platform-browser';
 
 describe('AvatarGroup', () => {
   let fixture: ComponentFixture<AvatarGroup>;
@@ -55,7 +56,7 @@ describe('AvatarGroup', () => {
   });
 
   it('should render AvatarGroup component without any additional CSS classes with invalid styleClass', () => {
-    component.styleClass = null;
+    component.styleClass = undefined;
     fixture.detectChanges();
     const el = fixture.nativeElement;
     expect(el.classList.length).toBe(1);
@@ -94,10 +95,12 @@ describe('AvatarGroup', () => {
     component.style = { color: 'blue', 'font-weight': 'bold' };
     fixture.detectChanges();
 
-    const styleTag = Array.from(document.getElementsByTagName('style')).find(el => el.textContent.includes('.p-avatar-group'));
+    // const styleTag = Array.from(document.getElementsByTagName('style')).find(el => el.textContent.includes('.p-avatar-group'));
+    const styleTag = fixture.debugElement.query(By.css('.p-avatar-group'));
+
     expect(styleTag).toBeTruthy();
-    expect(styleTag.textContent).toContain('color: blue;');
-    expect(styleTag.textContent).toContain('font-weight: bold;');
+    expect(styleTag.nativeElement.style.color).toBe('blue');
+    expect(styleTag.nativeElement.style.fontWeight).toBe('bold');
   });
 
   it('should have host element with class attribute "p-element"', () => {
@@ -130,7 +133,8 @@ describe('AvatarGroup', () => {
   it('should import and export AvatarGroup component correctly in AvatarGroupModule', () => {
     const module = new AvatarGroupModule();
     expect(module).toBeTruthy();
-    expect(module.declarations).toContain(AvatarGroup);
+    expect(module.declarations).toContain(AvatarGroup); //
     expect(module.imports).toContain(CommonModule);
   });
+
 });

@@ -17,20 +17,20 @@ describe('AvatarGroup', () => {
 
   // Negative cases
 
-  it('should handle negative value for maxParticipants', () => {
-    component.maxParticipants = -1;
-    expect(() => fixture.detectChanges()).toThrowError();
-  });
+  // it('should handle negative value for maxParticipants', () => {
+  //   component.maxParticipants = -1;    // method maxParticipants does not exist in AvatarGroup
+  //   expect(() => fixture.detectChanges()).toThrowError();
+  // });
 
-  it('should handle null value for maxParticipants', () => {
-    component.maxParticipants = null;
-    expect(() => fixture.detectChanges()).toThrowError();
-  });
+  // it('should handle null value for maxParticipants', () => {
+  //   component.maxParticipants = null; // method maxParticipants does not exist in AvatarGroup
+  //   expect(() => fixture.detectChanges()).toThrowError();
+  // });
 
-  it('should handle undefined value for maxParticipants', () => {
-    component.maxParticipants = undefined;
-    expect(() => fixture.detectChanges()).toThrowError();
-  });
+  // it('should handle undefined value for maxParticipants', () => {
+  //   component.maxParticipants = undefined; // method maxParticipants does not exist in AvatarGroup
+  //   expect(() => fixture.detectChanges()).toThrowError();
+  // });
 
   it('should handle invalid CSS class in styleClass', () => {
     component.styleClass = 'invalid-class';
@@ -44,9 +44,9 @@ describe('AvatarGroup', () => {
     expect(fixture.nativeElement.querySelector('div.p-avatar-group.p-component').style.invalidProperty).not.toBe('value');
   });
 
-  it('should handle empty styleUrls property', () => {
-    expect(() => component.ngOnInit()).not.toThrow();
-  });
+  // it('should handle empty styleUrls property', () => {
+  //   expect(() => component.ngOnInit()).not.toThrow();// method ngOnInit does not exist in AvatarGroup
+  // });
 
   it('should handle missing host class', () => {
     expect(fixture.nativeElement.querySelector('div.p-avatar-group.p-component')).toBeTruthy();

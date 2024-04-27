@@ -5,7 +5,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "test": "ng test",
+        "test": "jasmine",
         "test:headless": "ng test --watch=false --browsers=ChromeHeadless",
         "e2e": "ng e2e",
         "lint": "ng lint",
@@ -67,6 +67,7 @@
         "gulp-rename": "^2.0.0",
         "gulp-uglify": "^3.0.2",
         "gulp-uglifycss": "^1.1.0",
+        "jasmine": "^5.1.0",
         "jasmine-core": "~4.6.0",
         "jspdf": "^2.5.1",
         "jspdf-autotable": "^3.5.28",
@@ -92,6 +93,6 @@
     "dependencies": {
         "@angular/material": "^17.3.6",
         "npm": "^10.5.2",
-        "primeng": "^17.14.1"
+        "primeng": "^17.15.0"
     }
 }
