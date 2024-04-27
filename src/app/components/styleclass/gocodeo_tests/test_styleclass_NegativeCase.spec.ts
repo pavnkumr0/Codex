@@ -1,21 +1,26 @@
 import {  CommonModule  } from '@angular/common';
-import {  Directive, ElementRef, HostListener, Input, Renderer2  } from '@angular/core';
+import {  Directive, ElementRef, HostListener, Input, NgZone, Renderer2  } from '@angular/core';
 import {  DomHandler  } from 'primeng/dom';
+import { StyleClass } from './test_styleclass_EdgeCase.spec';
+
 
 describe('StyleClassDirective', () => {
-  let directive: StyleClassDirective;
+  let directive: StyleClass;
   let el: ElementRef;
   let renderer: Renderer2;
+  let zone: NgZone;
 
   beforeEach(() => {
     el = new ElementRef(document.createElement('div'));
     renderer = jasmine.createSpyObj('Renderer2', ['listen']);
-    directive = new StyleClassDirective(el, renderer);
+    zone = jasmine.createSpyObj('NgZOne',['run']);
+    directive = new StyleClass(el, renderer,zone);
   });
 
   it('should not display a console warning when enterClass is not a string', () => {
     const consoleSpy = spyOn(console, 'warn');
-    directive.enterClass = 123;
+    const inp = 123;
+      directive.enterClass = 123;
     expect(consoleSpy).not.toHaveBeenCalled();
   });
 
