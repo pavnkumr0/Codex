@@ -1,22 +1,23 @@
 import {  async, ComponentFixture, TestBed  } from '@angular/core/testing';
-import {  CalendarComponent  } from '../calendar.component';
-import {  YourServices  } from '../your-services';
-import {  YourModules  } from '../your-modules';
+// import {  Calendar  } from '../calendar.component';
+import { Calendar } from 'primeng/calendar';
+// import {  YourServices  } from '../your-services';
+// import {  YourModules  } from '../your-modules';
 
 describe('Calendar Component', () => {
-  let component: CalendarComponent;
-  let fixture: ComponentFixture<CalendarComponent>;
+  let component: Calendar;
+  let fixture: ComponentFixture<Calendar>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CalendarComponent],
-      providers: [YourServices],
-      imports: [YourModules]
+      declarations: [Calendar],
+      // providers: [YourServices],
+      // imports: [YourModules]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CalendarComponent);
+    fixture = TestBed.createComponent(Calendar);
     component = fixture.componentInstance;
   });
 

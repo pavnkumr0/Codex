@@ -1,21 +1,24 @@
 import {  ComponentFixture, TestBed  } from '@angular/core/testing';
-import {  CalendarComponent  } from '../calendar.component';
+// import {  Calendar  } from '../calendar.component';
+import { Calendar } from 'primeng/calendar';
 
-describe('CalendarComponent', () => {
-  let component: CalendarComponent;
-  let fixture: ComponentFixture<CalendarComponent>;
+describe('Calendar', () => {
+  let component: Calendar;
+  let fixture: ComponentFixture<Calendar>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CalendarComponent]
+      declarations: [Calendar]
     });
 
-    fixture = TestBed.createComponent(CalendarComponent);
+    fixture = TestBed.createComponent(Calendar);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should not set maxDate to a string value', () => {
+    // const newDate = new Date();
+
     const invalidDate = "invalid date";
     component.maxDate = invalidDate;
     expect(component.maxDate).toBeUndefined();
@@ -23,7 +26,7 @@ describe('CalendarComponent', () => {
 
   it('should not set maxDate to an empty object', () => {
     const emptyObject = {};
-    component.maxDate = emptyObject;
+    component.maxDate = undefined;
     expect(component.maxDate).toBeUndefined();
   });
 

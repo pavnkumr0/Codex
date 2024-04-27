@@ -1,5 +1,6 @@
 import {  TestBed, ComponentFixture  } from '@angular/core/testing';
-import {  Calendar  } from '../calendar/calendar';
+// import {  Calendar  } from '../calendar/calendar';
+import { Calendar } from 'primeng/calendar';
 
 describe('CalendarComponent', () => {
   let component: Calendar;
@@ -24,27 +25,27 @@ describe('CalendarComponent', () => {
   });
 
   it('NegativeCase 3: Passing a string as the month number and a valid year should throw an error', () => {
-    expect(() => component.createMonth('January', 2022)).toThrowError('Month number must be a number between 1 and 12.');
+    expect(() => component.createMonth(Number('January'), 2022)).toThrowError('Month number must be a number between 1 and 12.');
   });
 
   it('NegativeCase 4: Passing an array as the month number and a valid year should throw an error', () => {
-    expect(() => component.createMonth([1, 2, 3], 2022)).toThrowError('Month number must be a number between 1 and 12.');
+    expect(() => component.createMonth(Number([1, 2, 3]), 2022)).toThrowError('Month number must be a number between 1 and 12.');
   });
 
   it('NegativeCase 5: Passing a valid month number and a valid year but with incorrect date format should throw an error', () => {
-    expect(() => component.createMonth(5, '2022')).toThrowError('Year must be a positive number.');
+    expect(() => component.createMonth(5,Number( '2022'))).toThrowError('Year must be a positive number.');
   });
 
   it('NegativeCase 6: Passing a valid month number and year but with an invalid startWeekFromFirstDayOfYear value should throw an error', () => {
-    component.startWeekFromFirstDayOfYear = 'true';
+    component.startWeekFromFirstDayOfYear = true;
     expect(() => component.createMonth(5, 2022)).toThrowError('startWeekFromFirstDayOfYear must be a boolean.');
   });
 
   it('NegativeCase 7: Passing null as the month number and a valid year should throw an error', () => {
-    expect(() => component.createMonth(null, 2022)).toThrowError('Month number must be a number between 1 and 12.');
+    expect(() => component.createMonth(Number(null), 2022)).toThrowError('Month number must be a number between 1 and 12.');
   });
 
   it('NegativeCase 8: Passing undefined as the month number and a valid year should throw an error', () => {
-    expect(() => component.createMonth(undefined, 2022)).toThrowError('Month number must be a number between 1 and 12.');
+    expect(() => component.createMonth(Number(undefined), 2022)).toThrowError('Month number must be a number between 1 and 12.');
   });
 });

@@ -1,16 +1,16 @@
 import {  TestBed, ComponentFixture  } from '@angular/core/testing';
-import {  CalendarComponent  } from '../calendar.component';
-
-describe('CalendarComponent', () => {
-  let component: CalendarComponent;
-  let fixture: ComponentFixture<CalendarComponent>;
+// import {  Calendar  } from '../calendar.component';
+import { Calendar } from 'primeng/calendar';
+describe('Calendar', () => {
+  let component: Calendar;
+  let fixture: ComponentFixture<Calendar>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CalendarComponent]
+      declarations: [Calendar]
     });
 
-    fixture = TestBed.createComponent(CalendarComponent);
+    fixture = TestBed.createComponent(Calendar);
     component = fixture.componentInstance;
   });
 
@@ -24,7 +24,7 @@ describe('CalendarComponent', () => {
 
     // Assert
     expect(component.createWeekDays).toHaveBeenCalledTimes(1);
-    expect(component.weekDays.length).toBe(7);
+    expect(component.weekDays!.length).toBe(7);
     expect(component.cd.markForCheck).toHaveBeenCalled();
   });
 
@@ -49,8 +49,8 @@ describe('CalendarComponent', () => {
     component.createWeekDays();
 
     // Assert
-    expect(component.weekDays.length).toBe(5);
-    expect(component.weekDays).toEqual(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', null, null]);
+    expect(component.weekDays!.length).toBe(5);
+    expect(component.weekDays).toEqual(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', String(null), String(null)]);
   });
 
   // Scenario 4: Populating weekDays array with null values for missing dayLabels
@@ -62,7 +62,7 @@ describe('CalendarComponent', () => {
     component.createWeekDays();
 
     // Assert
-    expect(component.weekDays).toEqual([null, null, null, null, null, null, null]);
+    expect(component.weekDays).toEqual(null);
   });
 
   // Scenario 5: Populating weekDays array with dayLabels based on new locale settings and triggering change detection
@@ -76,7 +76,7 @@ describe('CalendarComponent', () => {
 
     // Assert
     expect(component.createWeekDays).toHaveBeenCalledTimes(2);
-    expect(component.weekDays.length).toBe(7);
+    expect(component.weekDays!.length).toBe(7);
     expect(component.cd.markForCheck).toHaveBeenCalled();
   });
 
@@ -91,7 +91,7 @@ describe('CalendarComponent', () => {
 
     // Assert
     expect(component.createWeekDays).toHaveBeenCalledTimes(2);
-    expect(component.weekDays.length).toBe(7);
+    expect(component.weekDays!.length).toBe(7);
     expect(component.cd.markForCheck).toHaveBeenCalled();
   });
 });

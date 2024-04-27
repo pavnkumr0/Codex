@@ -1,17 +1,17 @@
 import {  TestBed, ComponentFixture  } from '@angular/core/testing';
-import {  CalendarComponent  } from '../calendar.component';
+// import {  Calendar  } from '../calendar.component';
+import { Calendar } from 'primeng/calendar';
+describe('Calendar', () => {
 
-describe('CalendarComponent', () => {
-
-  let component: CalendarComponent;
-  let fixture: ComponentFixture<CalendarComponent>;
+  let component: Calendar;
+  let fixture: ComponentFixture<Calendar>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CalendarComponent]
+      declarations: [Calendar]
     });
 
-    fixture = TestBed.createComponent(CalendarComponent);
+    fixture = TestBed.createComponent(Calendar);
     component = fixture.componentInstance;
   });
 
@@ -24,8 +24,8 @@ describe('CalendarComponent', () => {
     
     expect(month.month).toBe(1);
     expect(month.year).toBe(2022);
-    expect(month.dates.length).toBe(6);
-    expect(month.weekNumbers.length).toBe(6);
+    expect(month.dates!.length).toBe(6);
+    expect(month.weekNumbers!.length).toBe(6);
   });
 
   it('should create month object with dates for June 2021', () => {
@@ -33,8 +33,8 @@ describe('CalendarComponent', () => {
     
     expect(month.month).toBe(6);
     expect(month.year).toBe(2021);
-    expect(month.dates.length).toBe(6);
-    expect(month.weekNumbers.length).toBe(6);
+    expect(month.dates!.length).toBe(6);
+    expect(month.weekNumbers!.length).toBe(6);
   });
 
   it('should create month object with dates for December 2023', () => {
@@ -42,8 +42,8 @@ describe('CalendarComponent', () => {
     
     expect(month.month).toBe(12);
     expect(month.year).toBe(2023);
-    expect(month.dates.length).toBe(6);
-    expect(month.weekNumbers.length).toBe(6);
+    expect(month.dates!.length).toBe(6);
+    expect(month.weekNumbers!.length).toBe(6);
   });
 
   it('should create month object with dates for February 2024', () => {
@@ -51,8 +51,8 @@ describe('CalendarComponent', () => {
     
     expect(month.month).toBe(2);
     expect(month.year).toBe(2024);
-    expect(month.dates.length).toBe(6);
-    expect(month.weekNumbers.length).toBe(6);
+    expect(month.dates!.length).toBe(6);
+    expect(month.weekNumbers!.length).toBe(6);
   });
 
   it('should create month object with dates for July 2020', () => {
@@ -60,8 +60,8 @@ describe('CalendarComponent', () => {
     
     expect(month.month).toBe(7);
     expect(month.year).toBe(2020);
-    expect(month.dates.length).toBe(6);
-    expect(month.weekNumbers.length).toBe(6);
+    expect(month.dates!.length).toBe(6);
+    expect(month.weekNumbers!.length).toBe(6);
   });
 
   it('should create month object with dates for April 2025', () => {
@@ -69,8 +69,8 @@ describe('CalendarComponent', () => {
     
     expect(month.month).toBe(4);
     expect(month.year).toBe(2025);
-    expect(month.dates.length).toBe(6);
-    expect(month.weekNumbers.length).toBe(6);
+    expect(month.dates!.length).toBe(6);
+    expect(month.weekNumbers!.length).toBe(6);
   });
 
   it('should create month object with dates for February 2024 with startWeekFromFirstDayOfYear as true', () => {
@@ -79,8 +79,8 @@ describe('CalendarComponent', () => {
     
     expect(month.month).toBe(2);
     expect(month.year).toBe(2024);
-    expect(month.dates.length).toBe(6);
-    expect(month.weekNumbers.length).toBe(5);
+    expect(month.dates!.length).toBe(6);
+    expect(month.weekNumbers!.length).toBe(5);
   });
 
   it('should create month object with dates for January 2022 with showWeek as false', () => {
@@ -89,8 +89,8 @@ describe('CalendarComponent', () => {
     
     expect(month.month).toBe(1);
     expect(month.year).toBe(2022);
-    expect(month.dates.length).toBe(6);
-    expect(month.weekNumbers.length).toBe(0);
+    expect(month.dates!.length).toBe(6);
+    expect(month.weekNumbers!.length).toBe(0);
   });
 
 });

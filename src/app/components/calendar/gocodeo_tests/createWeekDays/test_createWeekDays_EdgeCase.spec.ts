@@ -1,15 +1,18 @@
 import {  TestBed, inject  } from '@angular/core/testing';
-import {  CalendarComponent  } from '../calendar.component';
-import {  LocaleSettings  } from '../locale-settings.interface';
+// import {  Calendar  } from '../calendar.component';
+import { Calendar } from 'primeng/calendar';
+// import {  LocaleSettings  } from '../locale-settings.interface';
+import { LocaleSettings } from 'primeng/calendar';
 
-describe('CalendarComponent', () => {
-  let component: CalendarComponent;
+
+describe('Calendar', () => {
+  let component: Calendar;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [CalendarComponent]
+      providers: [Calendar]
     });
-    component = TestBed.inject(CalendarComponent);
+    component = TestBed.inject(Calendar);
   });
 
   it('should handle null input correctly for locale property', () => {

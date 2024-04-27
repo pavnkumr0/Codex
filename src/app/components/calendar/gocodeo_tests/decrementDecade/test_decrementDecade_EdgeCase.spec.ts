@@ -1,13 +1,14 @@
 import {  TestBed, async  } from '@angular/core/testing';
-import {  CalendarComponent  } from '../calendar.component';
+// import {  Calendar  } from '../calendar.component';
+import { Calendar } from 'primeng/calendar';
 
-describe('CalendarComponent', () => {
+describe('Calendar', () => {
   
-  let component: CalendarComponent;
+  let component: Calendar;
 
-  beforeEach(() => {
-    component = new CalendarComponent();
-  });
+  // beforeEach(() => {
+  //   component = new Calendar(default);
+  // });
 
   it('should decrement currentYear when initial value is 5', () => {
     component.currentYear = 5;
@@ -35,19 +36,19 @@ describe('CalendarComponent', () => {
   });
 
   it('should convert string representation of a number to actual number and decrement by 10', () => {
-    component.currentYear = '5';
+    component.currentYear = Number('5');
     component.decrementDecade();
     expect(component.currentYear).toBe(-5);
   });
 
   it('should result in NaN when currentYear is null', () => {
-    component.currentYear = null;
+    component.currentYear = Number(null);
     component.decrementDecade();
     expect(component.currentYear).toBeNaN();
   });
 
   it('should not change the value when currentYear is undefined', () => {
-    component.currentYear = undefined;
+    component.currentYear = Number(undefined);
     component.decrementDecade();
     expect(component.currentYear).toBeUndefined();
   });
@@ -95,32 +96,32 @@ describe('CalendarComponent', () => {
   });
 
   it('should convert the boolean to a number and decrement by 10', () => {
-    component.currentYear = true;
+    component.currentYear = Number(true);
     component.decrementDecade();
     expect(component.currentYear).toBe(-9);
   });
 
   it('should result in -10 when currentYear is an empty string', () => {
-    component.currentYear = '';
+    component.currentYear = Number('');
     component.decrementDecade();
     expect(component.currentYear).toBe(-10);
   });
 
   it('should convert the array to a string and then to a number, decrementing by 10', () => {
-    component.currentYear = [5];
+    component.currentYear = Number( [5]);
     component.decrementDecade();
     expect(component.currentYear).toBe(-5);
   });
 
   it('should result in NaN when currentYear is an object', () => {
-    component.currentYear = {};
+    component.currentYear = Number({});
     component.decrementDecade();
     expect(component.currentYear).toBeNaN();
   });
 
   it('should throw an error when currentYear is not a number or a string', () => {
     expect(() => {
-      component.currentYear = Symbol('foo');
+      component.currentYear = Number(Symbol('foo'));
       component.decrementDecade();
     }).toThrowError('currentYear must be a number or a string');
   });
