@@ -13,6 +13,15 @@ import { VoidListener } from 'primeng/ts-helpers';
     }
 })
 export class Draggable implements AfterViewInit, OnDestroy {
+  allowDrop(arg0: DragEvent) {
+    throw new Error('Method not implemented.');
+  }
+  onDragLeave(onDragLeave: any, arg1: string) {
+    throw new Error('Method not implemented.');
+  }
+  dragOver(dragOverEvent: DragEvent) {
+    throw new Error('Method not implemented.');
+  }
     dragEnter(mockDragEvent: DragEvent) {
       throw new Error('Method not implemented.');
     }
