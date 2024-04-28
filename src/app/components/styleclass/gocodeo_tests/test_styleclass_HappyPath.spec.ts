@@ -1,218 +1,127 @@
+import {  StyleClass  } from '../styleclass';
 import {  CommonModule  } from '@angular/common';
-import {  Directive, ElementRef, Input, Renderer2, NgZone  } from '@angular/core';
+import {  Directive, ElementRef, Renderer2, DebugElement, Component  } from '@angular/core';
+import {  ComponentFixture, TestBed  } from '@angular/core/testing';
+import {  By  } from '@angular/platform-browser';
 import {  DomHandler  } from 'primeng/dom';
 import {  VoidListener  } from 'primeng/ts-helpers';
 
 describe('StyleClassDirective', () => {
-  let directive: StyleClassDirective;
-  let elementRef: ElementRef;
+  let fixture: ComponentFixture<TestComponent>;
+  let directive: StyleClass;
+  let el: ElementRef;
   let renderer: Renderer2;
-  let zone: NgZone;
+  let debugElement: DebugElement;
 
   beforeEach(() => {
-    elementRef = new ElementRef(document.createElement('div'));
-    renderer = jasmine.createSpyObj('Renderer2', ['listen']);
-    zone = jasmine.createSpyObj('NgZone', ['runOutsideAngular']);
+    TestBed.configureTestingModule({
+      imports: [CommonModule],
+      declarations: [TestComponent, StyleClass],
+    });
 
-    directive = new StyleClassDirective(elementRef, renderer, zone);
+    fixture = TestBed.createComponent(TestComponent);
+    fixture.detectChanges();
+
+    el = fixture.componentInstance.el;
+    renderer = fixture.componentInstance.renderer;
+    directive = new StyleClass(el, renderer, jasmine.createSpyObj('NgZone', ['runOutsideAngular']));
+    debugElement = fixture.debugElement.query(By.directive(StyleClass));
   });
 
-  it('should toggle class on element', () => {
-    directive.toggleClass = 'toggle-class';
+  it('Scenario 1: Toggling a class on the target element when clicking on the host element with toggleClass property set', () => {
+    directive.toggleClass = 'active';
+    const target = document.createElement('div');
+    directive.target = target;
 
-    spyOn(DomHandler, 'hasClass').and.returnValue(false);
-    spyOn(DomHandler, 'addClass');
-
-    directive.clickListener();
-
-    expect(DomHandler.hasClass).toHaveBeenCalledWith(elementRef.nativeElement, 'toggle-class');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'toggle-class');
-  });
-
-  it('should apply enter animation classes', () => {
-    directive.enterFromClass = 'enter-from-class';
-    directive.enterActiveClass = 'enter-active';
-    directive.enterToClass = 'enter-to-class';
-
-    spyOn(DomHandler, 'removeClass');
-    spyOn(DomHandler, 'addClass');
-    spyOn(renderer, 'listen').and.callFake(callback => callback());
-
-    directive.clickListener();
-
-    expect(DomHandler.removeClass).toHaveBeenCalledWith(elementRef.nativeElement, 'enter-from-class');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'enter-active');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'enter-to-class');
-  });
-
-  it('should apply leave animation classes', () => {
-    directive.leaveFromClass = 'leave-from-class';
-    directive.leaveActiveClass = 'leave-active';
-    directive.leaveToClass = 'leave-to-class';
-
-    spyOn(DomHandler, 'removeClass');
-    spyOn(DomHandler, 'addClass');
-    spyOn(renderer, 'listen').and.callFake(callback => callback());
-
-    directive.clickListener();
-
-    expect(DomHandler.removeClass).toHaveBeenCalledWith(elementRef.nativeElement, 'leave-from-class');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'leave-active');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'leave-to-class');
-  });
-
-  it('should trigger leave animation on outside click', () => {
-    directive.hideOnOutsideClick = true;
-    spyOn(directive, 'leave');
-    spyOn(DomHandler, 'hasClass').and.returnValue(true);
     const event = new MouseEvent('click');
+    debugElement.triggerEventHandler('click', event);
+    fixture.detectChanges();
 
-    directive.bindDocumentClickListener();
-    document.dispatchEvent(event);
+    expect(renderer.addClass).toHaveBeenCalledWith(target, 'active');
 
-    expect(directive.leave).toHaveBeenCalled();
+    debugElement.triggerEventHandler('click', event);
+    fixture.detectChanges();
+
+    expect(renderer.removeClass).toHaveBeenCalledWith(target, 'active');
   });
 
-  it('should trigger leave animation on escape key press', () => {
-    directive.hideOnEscape = true;
-    spyOn(directive, 'leave');
-    const event = new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27, which: 27 });
+  it('Scenario 2: Triggering enter animation on the target element when clicking on the host element without toggleClass property set', () => {
+    const target = document.createElement('div');
+    spyOn(directive, 'resolveTarget').and.returnValue(target);
 
-    directive.bindDocumentKeydownListener();
-    document.dispatchEvent(event);
+    debugElement.triggerEventHandler('click', new MouseEvent('click'));
+    fixture.detectChanges();
 
-    expect(directive.leave).toHaveBeenCalled();
+    expect(renderer.addClass).toHaveBeenCalledWith(target, 'p-element-enter-active');
   });
 
-  it('should toggle class and trigger leave animation on outside click and escape key press', () => {
-    directive.toggleClass = 'toggle-class';
+  it('Scenario 3: Triggering leave animation on the target element when clicking on the host element without toggleClass property set', () => {
+    const target = document.createElement('div');
+    directive.target = target;
+
+    debugElement.triggerEventHandler('click', new MouseEvent('click'));
+    fixture.detectChanges();
+
+    expect(renderer.addClass).toHaveBeenCalledWith(target, 'p-element-leave-active');
+  });
+
+  it('Scenario 4: Handling outside click to trigger leave animation on the target element', () => {
     directive.hideOnOutsideClick = true;
-    directive.hideOnEscape = true;
+    const target = document.createElement('div');
+    directive.target = target;
 
-    spyOn(DomHandler, 'hasClass').and.returnValue(false);
-    spyOn(DomHandler, 'addClass');
-    spyOn(directive, 'hideOnOutsideClick');
-    spyOn(directive, 'hideOnEscape');
-    spyOn(renderer, 'listen').and.callFake(callback => callback());
-
-    directive.clickListener();
+    // Trigger outside click event
     document.dispatchEvent(new MouseEvent('click'));
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27, which: 27 }));
+    fixture.detectChanges();
 
-    expect(DomHandler.hasClass).toHaveBeenCalledWith(elementRef.nativeElement, 'toggle-class');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'toggle-class');
-    expect(DomHandler.hasClass).toHaveBeenCalledTimes(1);
-    expect(directive.hideOnOutsideClick).toHaveBeenCalled();
-    expect(directive.hideOnEscape).toHaveBeenCalled();
+    expect(renderer.addClass).toHaveBeenCalledWith(target, 'p-element-leave-active');
   });
 
-  it('should bind and unbind document click listener', () => {
-    directive.hideOnOutsideClick = true;
-    spyOn(directive, 'bindDocumentClickListener');
-    spyOn(directive, 'unbindDocumentClickListener');
-
-    directive.enter();
-    directive.leave();
-
-    expect(directive.bindDocumentClickListener).toHaveBeenCalled();
-    expect(directive.unbindDocumentClickListener).toHaveBeenCalled();
-  });
-
-  it('should bind and unbind document keydown listener', () => {
+  it('Scenario 5: Handling escape key press to trigger leave animation on the target element', () => {
     directive.hideOnEscape = true;
-    spyOn(directive, 'bindDocumentKeydownListener');
-    spyOn(directive, 'unbindDocumentKeydownListener');
+    const target = document.createElement('div');
+    directive.target = target;
 
-    directive.enter();
-    directive.leave();
+    // Trigger escape key press event
+    document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 27 }));
+    fixture.detectChanges();
 
-    expect(directive.bindDocumentKeydownListener).toHaveBeenCalled();
-    expect(directive.unbindDocumentKeydownListener).toHaveBeenCalled();
+    expect(renderer.addClass).toHaveBeenCalledWith(target, 'p-element-leave-active');
   });
 
-  it('should toggle class with enterFromClass and enterToClass', () => {
-    directive.toggleClass = 'toggle-class';
-    directive.enterFromClass = 'enter-from-class';
-    directive.enterToClass = 'enter-to-class';
-    directive.enterActiveClass = undefined;
+  it('Scenario 6: Resolving target element based on different selector values', () => {
+    const selectors = ['@next', '@prev', '@parent', '@grandparent', '.custom-selector'];
 
-    spyOn(DomHandler, 'hasClass').and.returnValue(false);
-    spyOn(DomHandler, 'addClass');
-    spyOn(DomHandler, 'removeClass');
-    spyOn(renderer, 'listen').and.callFake(callback => callback());
+    for (const selector of selectors) {
+      directive.selector = selector;
+      const target = directive.resolveTarget();
 
-    directive.clickListener();
+      expect(target).not.toBeNull();
 
-    expect(DomHandler.hasClass).toHaveBeenCalledWith(elementRef.nativeElement, 'toggle-class');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'toggle-class');
-    expect(DomHandler.removeClass).toHaveBeenCalledWith(elementRef.nativeElement, 'enter-from-class');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'enter-to-class');
-  });
-
-  it('should toggle class with leaveFromClass and leaveToClass', () => {
-    directive.toggleClass = 'toggle-class';
-    directive.leaveFromClass = 'leave-from-class';
-    directive.leaveToClass = 'leave-to-class';
-    directive.leaveActiveClass = undefined;
-
-    spyOn(DomHandler, 'hasClass').and.returnValue(false);
-    spyOn(DomHandler, 'addClass');
-    spyOn(DomHandler, 'removeClass');
-    spyOn(renderer, 'listen').and.callFake(callback => callback());
-
-    directive.clickListener();
-
-    expect(DomHandler.hasClass).toHaveBeenCalledWith(elementRef.nativeElement, 'toggle-class');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'toggle-class');
-    expect(DomHandler.removeClass).toHaveBeenCalledWith(elementRef.nativeElement, 'leave-from-class');
-    expect(DomHandler.addClass).toHaveBeenCalledWith(elementRef.nativeElement, 'leave-to-class');
-  });
-
-  it('should not apply enter animation classes when enterActiveClass is not defined', () => {
-    directive.enterFromClass = 'enter-from-class';
-    directive.enterToClass = 'enter-to-class';
-    directive.enterActiveClass = undefined;
-
-    spyOn(DomHandler, 'removeClass');
-    spyOn(DomHandler, 'addClass');
-    spyOn(renderer, 'listen').and.callFake(callback => callback());
-
-    directive.clickListener();
-
-    expect(DomHandler.removeClass).not.toHaveBeenCalled();
-    expect(DomHandler.addClass).not.toHaveBeenCalled();
-  });
-
-  it('should not apply leave animation classes when leaveActiveClass is not defined', () => {
-    directive.leaveFromClass = 'leave-from-class';
-    directive.leaveToClass = 'leave-to-class';
-    directive.leaveActiveClass = undefined;
-
-    spyOn(DomHandler, 'removeClass');
-    spyOn(DomHandler, 'addClass');
-    spyOn(renderer, 'listen').and.callFake(callback => callback());
-
-    directive.clickListener();
-
-    expect(DomHandler.removeClass).not.toHaveBeenCalled();
-    expect(DomHandler.addClass).not.toHaveBeenCalled();
-  });
-
-  it('should not bind document click listener when hideOnOutsideClick is false', () => {
-    directive.hideOnOutsideClick = false;
-    spyOn(directive, 'bindDocumentClickListener');
-
-    directive.enter();
-
-    expect(directive.bindDocumentClickListener).not.toHaveBeenCalled();
-  });
-
-  it('should not bind document keydown listener when hideOnEscape is false', () => {
-    directive.hideOnEscape = false;
-    spyOn(directive, 'bindDocumentKeydownListener');
-
-    directive.enter();
-
-    expect(directive.bindDocumentKeydownListener).not.toHaveBeenCalled();
+      if (selector === '@next') {
+        expect(target).toBe(el.nativeElement.nextElementSibling);
+      } else if (selector === '@prev') {
+        expect(target).toBe(el.nativeElement.previousElementSibling);
+      } else if (selector === '@parent') {
+        expect(target).toBe(el.nativeElement.parentElement);
+      } else if (selector === '@grandparent') {
+        expect(target).toBe(el.nativeElement.parentElement.parentElement);
+      } else if (selector === '.custom-selector') {
+        expect(target).toBe(document.querySelector('.custom-selector'));
+      }
+    }
   });
 });
+
+@Component({
+  template: '<div pStyleClass></div>',
+})
+class TestComponent {
+  public el: ElementRef;
+  public renderer: Renderer2;
+
+  constructor(el: ElementRef, renderer: Renderer2) {
+    this.el = el;
+    this.renderer = renderer;
+  }
+}

@@ -1,78 +1,108 @@
+import {  TestBed, ComponentFixture, fakeAsync, tick  } from '@angular/core/testing';
 import {  CommonModule  } from '@angular/common';
-import {  Directive, ElementRef, HostListener, Input, NgZone, Renderer2  } from '@angular/core';
-import {  DomHandler  } from 'primeng/dom';
-import { StyleClass } from './test_styleclass_EdgeCase.spec';
+import {  Directive, ElementRef, Renderer2  } from '@angular/core';
+import {  StyleClass  } from '../styleclass';
 
+describe('StyleClass Directive Negative Cases', () => {
 
-describe('StyleClassDirective', () => {
+  let fixture: ComponentFixture<StyleClass>;
   let directive: StyleClass;
   let el: ElementRef;
   let renderer: Renderer2;
-  let zone: NgZone;
 
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [CommonModule],
+      declarations: [StyleClass]
+    });
+
+    fixture = TestBed.createComponent(StyleClass);
+    directive = fixture.componentInstance;
     el = new ElementRef(document.createElement('div'));
-    renderer = jasmine.createSpyObj('Renderer2', ['listen']);
-    zone = jasmine.createSpyObj('NgZOne',['run']);
-    directive = new StyleClass(el, renderer,zone);
+    renderer = TestBed.inject(Renderer2);
+    directive.el = el;
+    directive.renderer = renderer;
+
+    spyOn(console, 'warn');
   });
 
-  it('should not display a console warning when enterClass is not a string', () => {
-    const consoleSpy = spyOn(console, 'warn');
-    const inp = 123;
-    if(typeof(inp) === 'string'){
-      console.warn('It is a string');
-    } 
+  it('1. Null and empty selector', () => {
+    // Null selector
+    directive.selector = null;
+    const nullTarget = directive.resolveTarget();
+    expect(nullTarget).toBeNull();
 
-    expect(consoleSpy).not.toHaveBeenCalled();
+    // Empty selector
+    directive.selector = '';
+    const emptyTarget = directive.resolveTarget();
+    expect(emptyTarget).toBeNull();
   });
 
-  it('should not display a console warning when leaveClass is not a string', () => {
-    const consoleSpy = spyOn(console, 'warn');
-    directive.leaveClass = true;
-    expect(consoleSpy).not.toHaveBeenCalled();
+  it('2. Invalid selector syntax', () => {
+    directive.selector = 'invalid-selector';
+    const invalidTarget = directive.resolveTarget();
+
+    expect(invalidTarget).toBeNull();
   });
 
-  it('should throw an error for an invalid selector', () => {
-    directive.selector = '@invalid';
-    expect(() => directive.resolveTarget()).toThrowError('Invalid selector: @invalid');
-  });
+  it('3. Enter and leave classes not provided', () => {
+    directive.enterClass = undefined;
+    directive.leaveClass = undefined;
 
-  it('should not add or remove any class when toggleClass is invalid', () => {
-    directive.toggleClass = 'invalid-class';
-    const addClassSpy = spyOn(DomHandler, 'addClass');
-    const removeClassSpy = spyOn(DomHandler, 'removeClass');
-    directive.toggle();
-    expect(addClassSpy).not.toHaveBeenCalled();
-    expect(removeClassSpy).not.toHaveBeenCalled();
-  });
-
-  it('should not apply animation during enter if enterActiveClass is invalid', () => {
-    directive.enterActiveClass = 'invalid-animation';
-    const addClassSpy = spyOn(DomHandler, 'addClass');
     directive.enter();
-    expect(addClassSpy).not.toHaveBeenCalledWith('invalid-animation');
-  });
+    expect(directive.animating).toBeFalse();
 
-  it('should not apply animation during leave if leaveActiveClass is invalid', () => {
-    directive.leaveActiveClass = 'invalid-animation';
-    const addClassSpy = spyOn(DomHandler, 'addClass');
     directive.leave();
-    expect(addClassSpy).not.toHaveBeenCalledWith('invalid-animation');
+    expect(directive.animating).toBeFalse();
   });
 
-  it('should not bind outside click event listener if hideOnOutsideClick is not a boolean', () => {
+  it('4. Toggle class not provided', () => {
+    directive.toggleClass = undefined;
+
+    directive.clickListener();
+    expect(directive.target).toBeNull();
+  });
+
+  it('5. Outside click event not bound', () => {
     directive.hideOnOutsideClick = true;
-    const listenSpy = spyOn(renderer, 'listen');
-    directive.bindDocumentClickListener();
-    expect(listenSpy).not.toHaveBeenCalled();
+
+    const outsideEvent = new MouseEvent('click', { target: document.createElement('div') });
+    spyOn(directive, 'leave');
+
+    document.dispatchEvent(outsideEvent);
+    expect(directive.leave).not.toHaveBeenCalled();
   });
 
-  it('should not bind escape key event listener if hideOnEscape is not a boolean', () => {
-    directive.hideOnEscape = 1;
-    const listenSpy = spyOn(renderer, 'listen');
+  it('6. Escape key event not bound', () => {
+    directive.hideOnEscape = true;
+
+    const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+    spyOn(directive, 'leave');
+
+    document.dispatchEvent(escapeEvent);
+    expect(directive.leave).not.toHaveBeenCalled();
+  });
+
+  it('7. Invalid document event listeners', () => {
+    directive.bindDocumentClickListener();
     directive.bindDocumentKeydownListener();
-    expect(listenSpy).not.toHaveBeenCalled();
+
+    expect(directive.documentClickListener).toBeNull();
+    expect(directive.documentKeydownListener).toBeNull();
+  });
+
+  it('8. Null target element', () => {
+    directive.target = null;
+
+    expect(() => directive.toggle()).not.toThrowError();
+  });
+
+  it('9. Unbinding null document event listeners', () => {
+    directive.unbindDocumentClickListener();
+    directive.unbindDocumentKeydownListener();
+
+    expect(directive.documentClickListener).toBeNull();
+    expect(directive.documentKeydownListener).toBeNull();
   });
 
 });
