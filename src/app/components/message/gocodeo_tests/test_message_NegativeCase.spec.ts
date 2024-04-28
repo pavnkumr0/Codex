@@ -1,5 +1,5 @@
 import {  TestBed, ComponentFixture  } from '@angular/core/testing';
-import {  UIMessage  } from '../message.component';
+import {  UIMessage  } from '../message';
 import {  CheckIcon  } from 'primeng/icons/check';
 import {  InfoCircleIcon  } from 'primeng/icons/infocircle';
 import {  TimesCircleIcon  } from 'primeng/icons/timescircle';

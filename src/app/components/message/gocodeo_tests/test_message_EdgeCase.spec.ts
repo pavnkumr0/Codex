@@ -78,7 +78,7 @@ describe('UIMessage Component', () => {
 
   it('should display an error message with icon only and custom CSS class', () => {
     component.severity = 'error';
-    component.text = null;
+    component.text = undefined;
     component.escape = true;
     component.style = null;
     component.styleClass = 'custom-error-class';
@@ -104,7 +104,7 @@ describe('UIMessage Component', () => {
     component.escape = false;
     component.style = null;
     component.styleClass = '';
-    component.icon = 'check';
+    // component.icon = 'check'; read-only property
 
     fixture.detectChanges();
 
