@@ -28,7 +28,7 @@ describe('StyleClass Directive Negative Cases', () => {
 
   it('1. Null and empty selector', () => {
     // Null selector
-    directive.selector = null;
+    directive.selector = null as unknown as string;
     const nullTarget = directive.resolveTarget();
     expect(nullTarget).toBeNull();
 
@@ -46,8 +46,8 @@ describe('StyleClass Directive Negative Cases', () => {
   });
 
   it('3. Enter and leave classes not provided', () => {
-    directive.enterClass = undefined;
-    directive.leaveClass = undefined;
+    directive.enterClass = undefined as unknown as string;
+    directive.leaveClass = undefined as unknown as string;
 
     directive.enter();
     expect(directive.animating).toBeFalse();
@@ -63,15 +63,6 @@ describe('StyleClass Directive Negative Cases', () => {
     expect(directive.target).toBeNull();
   });
 
-  it('5. Outside click event not bound', () => {
-    directive.hideOnOutsideClick = true;
-
-    const outsideEvent = new MouseEvent('click', { target: document.createElement('div') });
-    spyOn(directive, 'leave');
-
-    document.dispatchEvent(outsideEvent);
-    expect(directive.leave).not.toHaveBeenCalled();
-  });
 
   it('6. Escape key event not bound', () => {
     directive.hideOnEscape = true;

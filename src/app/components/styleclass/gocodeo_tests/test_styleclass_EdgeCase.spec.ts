@@ -25,14 +25,14 @@ describe('StyleClass Directive', () => {
 
   // Edge Case: enter animation with empty or null enterFromClass
   it('should not add enterFromClass if it is empty or null', () => {
-    directive.enterFromClass = null;
+    directive.enterFromClass = null as unknown as string;
     directive.enter();
     expect(directive.target?.classList.contains(directive.enterFromClass as string)).toBeFalsy();
   });
 
   // Edge Case: leave animation with empty or null leaveFromClass
   it('should not add leaveFromClass if it is empty or null', () => {
-    directive.leaveFromClass = null;
+    directive.leaveFromClass = null as unknown as string;
     directive.leave();
     expect(directive.target?.classList.contains(directive.leaveFromClass as string)).toBeFalsy();
   });
