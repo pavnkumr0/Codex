@@ -59,7 +59,7 @@ describe('StyleClassDirective', () => {
   });
 
   it('should not bind outside click event listener if hideOnOutsideClick is not a boolean', () => {
-    directive.hideOnOutsideClick = 'true';
+    directive.hideOnOutsideClick = true;
     const listenSpy = spyOn(renderer, 'listen');
     directive.bindDocumentClickListener();
     expect(listenSpy).not.toHaveBeenCalled();
