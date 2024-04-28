@@ -39,4 +39,6 @@ export class InputText implements DoCheck, AfterViewInit {
     exports: [InputText],
     declarations: [InputText]
 })
-export class InputTextModule {}
+export class InputTextModule {
+  [x: string]: any;
+}

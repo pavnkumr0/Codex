@@ -34,6 +34,7 @@ export class InputTextarea implements OnInit, AfterViewInit, OnDestroy {
     ngModelSubscription: Subscription | undefined;
 
     ngControlSubscription: Subscription | undefined;
+  customTemplate: string;
 
     constructor(public el: ElementRef, @Optional() public ngModel: NgModel, @Optional() public control: NgControl, private cd: ChangeDetectorRef) {}
 
