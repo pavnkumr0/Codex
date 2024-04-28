@@ -141,6 +141,8 @@ export class ToggleButton implements ControlValueAccessor {
 
     onModelTouched: Function = () => {};
   readonly: any;
+    static disabled: boolean;
+    static checked: boolean;
 
     constructor(public cd: ChangeDetectorRef) {}
 
