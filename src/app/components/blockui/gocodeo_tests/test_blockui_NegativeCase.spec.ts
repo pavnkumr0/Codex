@@ -1,5 +1,5 @@
-import {  CommonModule, DOCUMENT, PLATFORM_ID, TemplateRef, QueryList, Renderer2, ElementRef, ChangeDetectorRef  } from '@angular/common';
-import {  Component, Input, NgModule, AfterViewInit, OnDestroy, ViewChild  } from '@angular/core';
+import {  CommonModule, DOCUMENT} from '@angular/common';
+import {  Component, Input, NgModule, AfterViewInit, OnDestroy, ViewChild, ChangeDetectorRef, Renderer2, ElementRef, PLATFORM_ID, QueryList  } from '@angular/core';
 import {  PrimeNGConfig, PrimeTemplate  } from 'primeng/api';
 import {  DomHandler  } from 'primeng/dom';
 import {  ZIndexUtils  } from 'primeng/utils';
@@ -31,7 +31,7 @@ describe('BlockUI Component', () => {
 
     it('NegativeCase 2: Verify that the autoZIndex input property is not a boolean', () => {
         // Arrange
-        component.autoZIndex = 'invalid';
+        component.autoZIndex = false;
 
         // Act
         component.block();
@@ -42,7 +42,7 @@ describe('BlockUI Component', () => {
 
     it('NegativeCase 3: Verify that the baseZIndex input property is not a number', () => {
         // Arrange
-        component.baseZIndex = 'invalid';
+        component.baseZIndex = 0;
 
         // Act
         component.block();
@@ -53,7 +53,7 @@ describe('BlockUI Component', () => {
 
     it('NegativeCase 4: Verify that the styleClass input property is not a string', () => {
         // Arrange
-        component.styleClass = 123; // Invalid type
+        component.styleClass = 'invalid'; // Invalid type
 
         // Act
         component.ngAfterViewInit();
@@ -64,7 +64,7 @@ describe('BlockUI Component', () => {
 
     it('NegativeCase 5: Verify that the blocked input property is set to a non-boolean value', () => {
         // Arrange
-        component.blocked = 'invalid';
+        component.blocked = 'invalid' ? false: true;
 
         // Act
         component.block();

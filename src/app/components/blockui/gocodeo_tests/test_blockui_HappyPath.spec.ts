@@ -56,7 +56,7 @@ describe('BlockUI Component', () => {
     expect(maskElement.style.display).toBe('flex');
 
     // Verify that the z-index is set correctly
-    expect(ZIndexUtils.get()).toBe(1000);
+    expect(ZIndexUtils.get(maskElement)).toBe(1000);
   });
 
   it('Scenario 3: Testing unblocking behavior with animation end listener', () => {
@@ -65,7 +65,7 @@ describe('BlockUI Component', () => {
 
     // Simulate the animation end event
     const animationEndEvent = new Event('animationend');
-    (component.mask.nativeElement as HTMLElement).dispatchEvent(animationEndEvent);
+    (component.mask?.nativeElement as HTMLElement).dispatchEvent(animationEndEvent); 
 
     // Verify that the component is unblocked
     expect(component.blocked).toBeFalsy();
@@ -76,7 +76,7 @@ describe('BlockUI Component', () => {
     component.block();
 
     // Verify that the z-index is set correctly
-    expect(ZIndexUtils.get()).toBe(1500);
+    expect(ZIndexUtils.get(component.block())).toBe(1500);
   });
 
   it('Scenario 5: Testing unblocking behavior without animation end listener', () => {
@@ -87,13 +87,13 @@ describe('BlockUI Component', () => {
     component.animationEndListener = null;
 
     // Unblock the component
-    component.unblock();
+    const block = component.unblock();
 
     // Verify that the component is unblocked
     expect(component.blocked).toBeFalsy();
 
     // Verify that the z-index is cleared
-    expect(ZIndexUtils.get()).toBeUndefined();
+    expect(ZIndexUtils.get(block)).toBeUndefined();
   });
 
   it('Scenario 6: Testing contentTemplate assignment based on PrimeTemplate type', () => {
