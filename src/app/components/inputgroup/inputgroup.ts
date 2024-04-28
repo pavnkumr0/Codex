@@ -17,6 +17,9 @@ import { SharedModule } from 'primeng/api';
     }
 })
 export class InputGroup {
+  ngClass(ngClass: any) {
+    throw new Error('Method not implemented.');
+  }
     /**
      * Inline style of the element.
      * @group Props
@@ -27,6 +30,7 @@ export class InputGroup {
      * @group Props
      */
     @Input() styleClass: string | undefined;
+  someCondition: null;
 }
 
 @NgModule({

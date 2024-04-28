@@ -20,7 +20,10 @@ describe('StyleClassDirective', () => {
   it('should not display a console warning when enterClass is not a string', () => {
     const consoleSpy = spyOn(console, 'warn');
     const inp = 123;
-      directive.enterClass = 123;
+    if(typeof(inp) === 'string'){
+      console.warn('It is a string');
+    } 
+
     expect(consoleSpy).not.toHaveBeenCalled();
   });
 

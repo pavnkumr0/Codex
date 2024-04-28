@@ -50,6 +50,9 @@ export const KNOB_VALUE_ACCESSOR: any = {
     }
 })
 export class Knob {
+    ngOnInit() {
+      throw new Error('Method not implemented.');
+    }
     /**
      * Style class of the component.
      * @group Props

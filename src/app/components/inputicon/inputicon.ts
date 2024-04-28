@@ -19,6 +19,8 @@ export class InputIcon {
      * @group Props
      */
     @Input() styleClass: string | undefined;
+  encapsulation: any;
+  changeDetection: any;
 }
 
 @NgModule({
@@ -26,4 +28,11 @@ export class InputIcon {
     exports: [InputIcon, SharedModule],
     declarations: [InputIcon]
 })
-export class InputIconModule {}
+export class InputIconModule {
+  exports(exports: any) {
+    throw new Error('Method not implemented.');
+  }
+  imports(imports: any) {
+    throw new Error('Method not implemented.');
+  }
+}

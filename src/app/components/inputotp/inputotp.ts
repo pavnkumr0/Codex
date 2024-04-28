@@ -132,6 +132,8 @@ export class InputOtp implements AfterContentInit {
     onModelTouched: Function = () => {};
 
     value: any;
+  unstyled: boolean;
+  customTemplate: string;
 
     get inputMode(): string {
         return this.integerOnly ? 'numeric' : 'text';
