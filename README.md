@@ -2,10 +2,10 @@
 
 ### The repository contains successfully debugged files of AI generated spec files in typescript, which run on Jasmine-Karma testing framework. <br /><br />
 
-### Team name: Codex <br /><br /><br />
-Team members: <br />
-              1. [pavankumr0](https://github.com/pavnkumr0)<br />
-              2. [xeomatrix369](https://github.com/xeomatrix369)<br />
-              3. [codingram2003](https://github.com/codingram2003)<br />
-              4. [vodori6161](https://github.com/vodori6161)<br />
+### Team name: Codex 
+Team members: 
+              - [pavankumr0](https://github.com/pavnkumr0)
+              - [xeomatrix369](https://github.com/xeomatrix369)
+              - [codingram2003](https://github.com/codingram2003)
+              - [vodori6161](https://github.com/vodori6161)
     
